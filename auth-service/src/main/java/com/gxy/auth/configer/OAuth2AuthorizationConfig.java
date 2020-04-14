@@ -11,18 +11,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import javax.sql.DataSource;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -43,6 +49,8 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     /* @Autowired
      private UserDetailsService userDetailsService;
      */
+    @Autowired
+    private ClientDetailsService clientDetailsService;
 
     @Autowired
     private AuthenticationManager authenticationManager;//认证管理器
@@ -87,11 +95,12 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     // 也就在这里改了就是，隐藏了数据获取的细节）
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+        Collections.synchronizedMap(new HashMap());
         //数据库的方式
-        //clients.jdbc(dataSource).passwordEncoder(passwordEncoder)
-        //clients.withClientDetails(clientDetailsService).build();
+        //clients.jdbc().passwordEncoder(passwordEncoder);
+        clients.withClientDetails(new JdbcClientDetailsService(dataSource));
         //内存中的方式
-        clients.inMemory()
+       /* clients.inMemory()
                 .withClient("myapp")
                 .resourceIds("resourceId")
                 .authorizedGrantTypes("password", "refresh_token", "authorization_code")//客户端有那些授权方式权限
@@ -100,11 +109,15 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
                 .redirectUris("http://www.baidu.com")
                 .accessTokenValiditySeconds(ACCESS_TOKEN_TIMER)
                 .refreshTokenValiditySeconds(REFRESH_TOKEN_TIMER)
-                .autoApprove(true);// //登录后绕过批准询问(/oauth/confirm_access)
+                .autoApprove(true);// //登录后绕过批准询问(/oauth/confirm_access)*/
         //password=
         //authorization_code=授权码方式
         //
 
+    }
+
+    public static void main(String[] args) {
+        System.out.printf(new BCryptPasswordEncoder().encode("123456"));
     }
 
     @Override
