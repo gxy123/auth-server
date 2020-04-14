@@ -1,6 +1,7 @@
 package com.gxy.auth.configer;
 
 import com.gxy.auth.service.impl.UserDetailServiceImpl;
+import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 //之所以要配置security，主要是因为在这个授权服务中，
 // 还是有一些资源需要保护（所以，严格说来，它也是一个资源服务）。
@@ -23,6 +25,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailServiceImpl userDetailServiceImpl;
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -68,8 +73,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-       // http.authorizeRequests().antMatchers("/oauth/**").permitAll().and().csrf().disable().authorizeRequests().anyRequest().authenticated();
-            http.authorizeRequests().anyRequest().permitAll().and().httpBasic().and().csrf().disable();
+        // http.authorizeRequests().antMatchers("/oauth/**").permitAll().and().csrf().disable().authorizeRequests().anyRequest().authenticated();
+        /*http.apply(smsCodeAuthenticationSecurityConfig)
+                .and().authorizeRequests().antMatchers("api/smsCode/sms").permitAll().anyRequest().authenticated()
+                .and().formLogin().permitAll().and().httpBasic().and().csrf().disable();*/
+        http.apply(smsCodeAuthenticationSecurityConfig)
+                .and().authorizeRequests().antMatchers("/api/**","/swagger-ui.html","webjars/*").permitAll().anyRequest().authenticated()
+                .and().formLogin().permitAll().and().httpBasic().and().csrf().disable();
 
     }
 }

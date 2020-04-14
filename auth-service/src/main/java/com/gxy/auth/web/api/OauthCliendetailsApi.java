@@ -64,7 +64,7 @@ public class OauthCliendetailsApi extends BaseControllerImpl<OauthCliendetailsDO
     @ApiOperation(value = "获取详情", httpMethod = "GET", notes = "获取详情")
     @RequestMapping("get")
     public CommonResult<OauthCliendetailsDO> detail(@RequestParam("id") Long id) {
-        return getService().get(id);
+        return CommonResult.successReturn(null);
     }
 
     /**

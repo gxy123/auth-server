@@ -3,9 +3,12 @@ package com.gxy.auth.configer;
 
 import com.gxy.auth.converter.JwtTokenStoreExt;
 import com.gxy.auth.converter.MyJwtAccessTokenConverter;
+import com.gxy.auth.service.SmsCodeSender;
+import com.gxy.auth.service.impl.DefaultSmsCodeSender;
 import com.gxy.auth.utils.RSAUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -156,5 +159,11 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
         converter.setKeyPair(RSAUtil.GetKeyPair());
         return converter;
     }
+    @Bean
+    @ConditionalOnMissingBean(SmsCodeSender.class)//当容器中找到了SmsCodeSender的实现就不会再用此实现bean
+    public SmsCodeSender smsCodeSender() { //方法的名字就是spring容器中bean的名字
+        return new DefaultSmsCodeSender();
+    }
+
 
 }
