@@ -12,9 +12,10 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-
+import org.springframework.stereotype.Service;
 public class SmsCodeAuthenticationProvider implements AuthenticationProvider {
-
+    @Qualifier("userDetailServiceImpl")
+    @Autowired
     private UserDetailsService userDetailsService;
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

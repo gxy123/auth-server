@@ -2,6 +2,7 @@ package com.gxy.auth.service;
 
 import com.gxy.client.base.CommonResult;
 import com.gxy.user.client.domain.SyUserDO;
+import com.gxy.user.client.vo.SyUserVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -17,4 +18,6 @@ import java.util.Map;
 public interface UserService {
     @RequestMapping(method = RequestMethod.GET, value = "user/getUser/{username}")
     CommonResult<SyUserDO> getUserByUserName(@PathVariable("username") String username);
+    @RequestMapping(method = RequestMethod.GET, value = "user/getUserVO/{username}")
+    CommonResult<SyUserVO> getUserVOByUserName(@PathVariable("username") String username);
 }

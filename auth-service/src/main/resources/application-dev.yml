@@ -2,11 +2,11 @@ server:
   tomcat:
     max-threads: 3000
     min-spare-threads: 10
-  port: 8081
+  port: 8763
 eureka:
   client:
     service-url:
-      defaultZone: http://127.0.0.1:8761/eureka/
+      defaultZone: http://192.168.163.132:8761/eureka
     should-unregister-on-shutdown: true
     register-with-eureka: true
     fetch-registry: true
@@ -20,7 +20,7 @@ spring:
   datasource: #以下数据库部分自行修改
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost/oauth_db?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://172.27.35.1/oauth_db?useUnicode=true&characterEncoding=UTF-8
     username: root
     password: root
     dbcp2:
@@ -35,13 +35,20 @@ spring:
   transaction:
     rollback-on-commit-failure: true
   redis: #以下redis部分自行修改
-    host: host
+    host: 172.27.35.1
     port: 6379
+    database: 0
     #       password: dh35hebsd87ed9df9d0kemd9
     lettuce:
       pool:
         min-idle: 4
         max-active: 8
+    jedis:
+      pool:
+        max-active: 50
+        max-wait: -1
+        max-idle: 20
+    timeout: 5000
   jackson:
     time-zone: GMT+8
     date-format: yyyy-MM-dd HH:mm:ss

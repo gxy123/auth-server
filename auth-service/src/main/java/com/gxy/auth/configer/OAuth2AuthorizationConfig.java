@@ -62,6 +62,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private PasswordEncoder passwordEncoder;//密码加密类
 
+
     /* 下面是一些默认的端点 URL：
      /oauth/authorize：授权端点
      /oauth/token：令牌端点
@@ -98,7 +99,6 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
     // 也就在这里改了就是，隐藏了数据获取的细节）
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        Collections.synchronizedMap(new HashMap());
         //数据库的方式
         //clients.jdbc().passwordEncoder(passwordEncoder);
         clients.withClientDetails(new JdbcClientDetailsService(dataSource));
@@ -119,10 +119,6 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
 
     }
 
-    public static void main(String[] args) {
-        System.out.printf(new BCryptPasswordEncoder().encode("123456"));
-    }
-
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints.tokenStore(getTokenStore())
@@ -137,7 +133,7 @@ public class OAuth2AuthorizationConfig extends AuthorizationServerConfigurerAdap
        // }
     }
 
-    @Bean
+   @Bean
     public TokenStore getTokenStore() {
         if (JWT_SY_STORE.equalsIgnoreCase("jwt_sy")) {// jwt对称加密存储方式
             return new JwtTokenStoreExt(accessTokenConverter());
